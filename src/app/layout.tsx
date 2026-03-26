@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "集体照标注工具",
-  description: "上传集体照，AI自动识别人脸，标注人物信息",
+  title: "MindsLeap「悦动」时刻",
+  description: "记录每一个精彩瞬间，AI 自动识别人脸，轻松标注人物信息",
 };
 
 export default function RootLayout({

@@ -76,7 +76,7 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
 
   // Update page title
   useEffect(() => {
-    document.title = title ? `编辑 - ${title}` : "编辑 - 集体照标注工具";
+    document.title = title ? `编辑 - ${title}` : "编辑 - 悦动时刻";
   }, [title]);
 
   // Load image for avatar extraction

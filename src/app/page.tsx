@@ -69,10 +69,10 @@ export default function Home() {
         <div className="w-full max-w-lg animate-fade-in">
           <div className="text-center mb-8 md:mb-10">
             <h2 className="text-3xl md:text-4xl font-bold mb-3 text-gray-900">
-              集体照标注工具
+              MindsLeap「悦动」时刻
             </h2>
             <p className="text-gray-500 text-sm md:text-base">
-              上传集体照，AI 自动识别人脸，轻松标注每个人的信息
+              记录每一个精彩瞬间，AI 自动识别人脸，轻松标注人物信息
             </p>
           </div>
 

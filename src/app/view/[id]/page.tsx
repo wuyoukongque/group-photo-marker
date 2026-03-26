@@ -40,7 +40,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
 
   // Update page title
   useEffect(() => {
-    document.title = title ? `${title} - 集体照标注` : "集体照标注工具";
+    document.title = title ? `${title} - 悦动时刻` : "MindsLeap「悦动」时刻";
   }, [title]);
 
   useEffect(() => {
