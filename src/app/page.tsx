@@ -47,12 +47,20 @@ export default function Home() {
           <a href="/">
             <img src="/images/logo-blue.png" alt="MindsLeap" className="h-8" />
           </a>
-          <a
-            href="/admin/faces"
-            className="text-sm font-medium text-gray-500 hover:text-[var(--primary)] transition-colors"
-          >
-            人脸库管理
-          </a>
+          <div className="flex items-center gap-4">
+            <a
+              href="/admin/projects"
+              className="text-sm font-medium text-gray-500 hover:text-[var(--primary)] transition-colors"
+            >
+              项目管理
+            </a>
+            <a
+              href="/admin/faces"
+              className="text-sm font-medium text-gray-500 hover:text-[var(--primary)] transition-colors"
+            >
+              人脸库管理
+            </a>
+          </div>
         </div>
       </header>
 

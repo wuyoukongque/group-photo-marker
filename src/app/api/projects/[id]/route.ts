@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { readJSON, writeJSON } from "@/lib/storage";
+import { readJSON, writeJSON, deleteJSON } from "@/lib/storage";
 
 export async function GET(
   _request: Request,
@@ -50,6 +50,33 @@ export async function PUT(
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Unknown error";
     console.error("PUT /api/projects/[id] error:", message);
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const { searchParams } = new URL(request.url);
+    const token = searchParams.get("token");
+
+    const existing = await readJSON(`projects/${id}`, null) as Record<string, unknown> | null;
+    if (!existing) {
+      return NextResponse.json({ error: "项目不存在" }, { status: 404 });
+    }
+
+    if (token !== existing.editToken) {
+      return NextResponse.json({ error: "无权限删除" }, { status: 403 });
+    }
+
+    await deleteJSON(`projects/${id}`);
+    return NextResponse.json({ success: true });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    console.error("DELETE /api/projects/[id] error:", message);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
