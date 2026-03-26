@@ -67,15 +67,22 @@ export default function FaceDetector({
     img.src = imageDataUrl;
   }, [imageDataUrl]);
 
-  // Calculate display size
+  // Calculate display size (responsive to container width)
   useEffect(() => {
     if (!imgSize.w || !containerRef.current) return;
-    const containerWidth = containerRef.current.clientWidth;
-    const scale = Math.min(1, containerWidth / imgSize.w);
-    setDisplaySize({
-      w: Math.round(imgSize.w * scale),
-      h: Math.round(imgSize.h * scale),
-    });
+    const updateSize = () => {
+      if (!containerRef.current) return;
+      const containerWidth = containerRef.current.clientWidth;
+      const scale = Math.min(1, containerWidth / imgSize.w);
+      setDisplaySize({
+        w: Math.round(imgSize.w * scale),
+        h: Math.round(imgSize.h * scale),
+      });
+    };
+    updateSize();
+    const observer = new ResizeObserver(updateSize);
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
   }, [imgSize]);
 
   // Draw canvas with high DPI support
