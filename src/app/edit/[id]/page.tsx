@@ -244,6 +244,46 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
     navigator.clipboard.writeText(editUrl).then(() => alert("编辑链接已复制（含编辑权限）"));
   }, [id, editToken]);
 
+  const [syncing, setSyncing] = useState(false);
+
+  const handleSyncFeishu = useCallback(async () => {
+    const namedPersons = persons.filter((p) => p.name);
+    if (namedPersons.length === 0) {
+      alert("没有已命名的人物");
+      return;
+    }
+    setSyncing(true);
+    try {
+      const names = namedPersons.map((p) => p.name);
+      const res = await fetch("/api/feishu/match", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ names }),
+      });
+      const { results } = await res.json();
+      let updated = 0;
+      setPersons((prev) =>
+        prev.map((p) => {
+          const match = results?.[p.name];
+          if (match) {
+            const bio = [match.company, match.role].filter(Boolean).join(" · ");
+            if (bio) {
+              updated++;
+              return { ...p, bio };
+            }
+          }
+          return p;
+        })
+      );
+      markEdited();
+      alert(`已同步 ${updated} 人的公司信息`);
+    } catch {
+      alert("同步失败，请重试");
+    } finally {
+      setSyncing(false);
+    }
+  }, [persons, markEdited]);
+
   const newFacesCount = persons.filter((p) => p.name && p.descriptor && !p.libraryEntryId).length;
 
   if (loading) {
@@ -290,6 +330,13 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
               </button>
               <button onClick={copyShareLink} className="btn-secondary text-xs px-3 py-1.5">
                 分享链接
+              </button>
+              <button
+                onClick={handleSyncFeishu}
+                disabled={syncing}
+                className="btn-secondary text-xs px-3 py-1.5 hidden sm:inline-flex"
+              >
+                {syncing ? "同步中..." : "同步飞书"}
               </button>
               {newFacesCount > 0 && (
                 <button
