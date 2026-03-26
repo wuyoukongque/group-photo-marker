@@ -42,6 +42,7 @@ export async function writeJSON(key: string, data: unknown): Promise<void> {
 
   if (isVercel) {
     await put(`${key}.json`, content, {
+      access: "private",
       contentType: "application/json",
       addRandomSuffix: false,
     });
