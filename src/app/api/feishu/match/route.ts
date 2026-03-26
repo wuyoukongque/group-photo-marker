@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 
-const APP_ID = process.env.FEISHU_APP_ID || "";
-const APP_SECRET = process.env.FEISHU_APP_SECRET || "";
 const APP_TOKEN = "Xh3pbIguTao7wVsuLZvcRM3PnKg";
 const TABLE_ID = "tblE4y89nwwncB5r";
 
@@ -21,12 +19,19 @@ const RECORDS_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 async function getTenantToken(): Promise<string> {
   if (cachedToken && Date.now() < tokenExpiry) return cachedToken;
 
+  const appId = process.env.FEISHU_APP_ID || "";
+  const appSecret = process.env.FEISHU_APP_SECRET || "";
+
+  if (!appId || !appSecret) {
+    throw new Error("Missing FEISHU_APP_ID or FEISHU_APP_SECRET env vars");
+  }
+
   const res = await fetch(
     "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal",
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ app_id: APP_ID, app_secret: APP_SECRET }),
+      body: JSON.stringify({ app_id: appId, app_secret: appSecret }),
     }
   );
   const data = await res.json();
