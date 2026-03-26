@@ -20,7 +20,7 @@ function euclideanDistance(a: number[], b: number[]): number {
   return Math.sqrt(sum);
 }
 
-const DUPLICATE_THRESHOLD = 0.5;
+const DUPLICATE_THRESHOLD = 0.35;
 
 export async function GET() {
   const entries = await readJSON<FaceEntry[]>("face-library", []);
