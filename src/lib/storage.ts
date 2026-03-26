@@ -29,7 +29,7 @@ export async function readJSON<T>(key: string, fallback: T): Promise<T> {
   if (isVercel) {
     try {
       const result = await get(`${key}.json`, { access: "private" });
-      if (!result) return fallback;
+      if (!result || !result.stream) return fallback;
       const text = await streamToText(result.stream);
       return JSON.parse(text);
     } catch (err) {

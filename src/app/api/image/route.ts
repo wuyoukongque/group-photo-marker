@@ -16,11 +16,11 @@ export async function GET(request: Request) {
   try {
     if (isVercel) {
       const result = await get(key, { access: "private" });
-      if (!result) {
+      if (!result || !result.stream) {
         return NextResponse.json({ error: "Not found" }, { status: 404 });
       }
       // Stream the blob content through
-      return new NextResponse(result.stream, {
+      return new NextResponse(result.stream as ReadableStream, {
         headers: {
           "Content-Type": result.blob.contentType || "image/jpeg",
           "Cache-Control": "public, max-age=31536000, immutable",
