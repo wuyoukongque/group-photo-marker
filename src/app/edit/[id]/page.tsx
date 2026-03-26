@@ -191,10 +191,35 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
     if (newPersons.length > 0) setSelectedPersonId(newPersons[0].id);
   }, []);
 
+  const feishuMatchTimer = useRef<NodeJS.Timeout | null>(null);
+
   const handleUpdatePerson = useCallback(
     (id: string, updates: Partial<Person>) => {
       setPersons((prev) => prev.map((p) => (p.id === id ? { ...p, ...updates } : p)));
       markEdited();
+
+      // Auto-match company info from Feishu when name changes
+      if (updates.name && updates.name.length >= 2) {
+        if (feishuMatchTimer.current) clearTimeout(feishuMatchTimer.current);
+        feishuMatchTimer.current = setTimeout(async () => {
+          try {
+            const res = await fetch("/api/feishu/match", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ names: [updates.name] }),
+            });
+            const { results } = await res.json();
+            const match = results?.[updates.name!];
+            if (match) {
+              const bio = [match.company, match.role].filter(Boolean).join(" · ");
+              setPersons((prev) =>
+                prev.map((p) => (p.id === id && !p.bio ? { ...p, bio } : p))
+              );
+              markEdited();
+            }
+          } catch {}
+        }, 500);
+      }
     },
     [markEdited]
   );
