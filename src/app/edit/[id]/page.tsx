@@ -261,20 +261,20 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
         body: JSON.stringify({ names }),
       });
       const { results } = await res.json();
+      // Count matches first, then update state
       let updated = 0;
-      setPersons((prev) =>
-        prev.map((p) => {
-          const match = results?.[p.name];
-          if (match) {
-            const bio = [match.company, match.role].filter(Boolean).join(" · ");
-            if (bio) {
-              updated++;
-              return { ...p, bio };
-            }
+      const newPersons = persons.map((p) => {
+        const match = results?.[p.name];
+        if (match) {
+          const bio = [match.company, match.role].filter(Boolean).join(" · ");
+          if (bio) {
+            updated++;
+            return { ...p, bio };
           }
-          return p;
-        })
-      );
+        }
+        return p;
+      });
+      setPersons(newPersons);
       markEdited();
       alert(`已同步 ${updated} 人的公司信息`);
     } catch {

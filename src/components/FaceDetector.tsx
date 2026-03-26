@@ -529,19 +529,19 @@ export default function FaceDetector({
   );
 
   return (
-    <div ref={containerRef} className="w-full">
+    <div ref={containerRef} className="w-full overflow-hidden">
       {detecting && (
         <div className="text-center py-8">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-[var(--primary)] border-t-transparent mb-3"></div>
           <p className="text-gray-500">AI 正在识别人脸...</p>
         </div>
       )}
-      <div className="relative inline-block">
+      <div className="relative" style={{ width: displaySize.w || "100%", maxWidth: "100%" }}>
         <canvas
           ref={canvasRef}
           onClick={handleCanvasClick}
           onDoubleClick={handleDoubleClick}
-          className="rounded-lg cursor-pointer max-w-full"
+          className="rounded-lg cursor-pointer block w-full"
         />
       </div>
       {detected && (

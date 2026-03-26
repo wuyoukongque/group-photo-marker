@@ -201,8 +201,8 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
         )}
 
         {/* Photo */}
-        <div ref={containerRef} className="flex justify-center mb-8 md:mb-12">
-          <canvas ref={canvasRef} className="rounded-2xl shadow-lg max-w-full" />
+        <div ref={containerRef} className="flex justify-center mb-8 md:mb-12 overflow-hidden">
+          <canvas ref={canvasRef} className="rounded-2xl shadow-lg block w-full" style={{ maxWidth: displaySize.w || "100%" }} />
         </div>
 
         {/* Person cards */}
