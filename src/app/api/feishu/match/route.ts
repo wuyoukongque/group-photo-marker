@@ -7,6 +7,7 @@ const TABLE_ID = "tblE4y89nwwncB5r";
 
 interface FeishuRecord {
   name: string;
+  wechatName: string;
   company: string;
   role: string;
 }
@@ -56,10 +57,11 @@ async function getAllRecords(): Promise<FeishuRecord[]> {
     for (const item of data.data.items || []) {
       const fields = item.fields;
       const name = extractText(fields["客户姓名"]);
+      const wechatName = extractText(fields["微信昵称"]);
       const company = extractText(fields["公司"]);
       const role = extractSelect(fields["职级"]);
-      if (name) {
-        records.push({ name, company, role });
+      if (name || wechatName) {
+        records.push({ name, wechatName, company, role });
       }
     }
 
@@ -90,6 +92,33 @@ function extractSelect(val: unknown): string {
   return "";
 }
 
+function fuzzyMatch(query: string, records: FeishuRecord[]): FeishuRecord | null {
+  const q = query.trim().toLowerCase();
+  if (!q) return null;
+
+  // 1. Exact match on name
+  const exact = records.find((r) => r.name.toLowerCase() === q);
+  if (exact) return exact;
+
+  // 2. Exact match on wechat name
+  const wechatExact = records.find((r) => r.wechatName.toLowerCase() === q);
+  if (wechatExact) return wechatExact;
+
+  // 3. Name contains query or query contains name (for partial Chinese names)
+  const nameContains = records.find(
+    (r) => r.name && (r.name.includes(q) || q.includes(r.name))
+  );
+  if (nameContains) return nameContains;
+
+  // 4. Wechat name contains query or query contains wechat name
+  const wechatContains = records.find(
+    (r) => r.wechatName && (r.wechatName.toLowerCase().includes(q) || q.includes(r.wechatName.toLowerCase()))
+  );
+  if (wechatContains) return wechatContains;
+
+  return null;
+}
+
 // POST: match names to company info
 export async function POST(request: Request) {
   try {
@@ -99,11 +128,13 @@ export async function POST(request: Request) {
     }
 
     const records = await getAllRecords();
-    const results: Record<string, { company: string; role: string } | null> = {};
+    const results: Record<string, { company: string; role: string; matchedName: string } | null> = {};
 
     for (const name of names) {
-      const match = records.find((r) => r.name === name);
-      results[name] = match ? { company: match.company, role: match.role } : null;
+      const match = fuzzyMatch(name, records);
+      results[name] = match
+        ? { company: match.company, role: match.role, matchedName: match.name }
+        : null;
     }
 
     return NextResponse.json({ results });
