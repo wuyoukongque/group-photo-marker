@@ -11,6 +11,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": ">=20"
+  },
   "type": "module",
   "dependencies": {
     "@mediapipe/tasks-vision": "^0.10.34",
