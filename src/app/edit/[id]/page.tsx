@@ -212,10 +212,12 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
             const match = results?.[updates.name!];
             if (match) {
               const bio = [match.company, match.role].filter(Boolean).join(" · ");
-              setPersons((prev) =>
-                prev.map((p) => (p.id === id && !p.bio ? { ...p, bio } : p))
-              );
-              markEdited();
+              if (bio) {
+                setPersons((prev) =>
+                  prev.map((p) => (p.id === id ? { ...p, bio } : p))
+                );
+                markEdited();
+              }
             }
           } catch {}
         }, 500);
