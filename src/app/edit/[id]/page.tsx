@@ -111,6 +111,7 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
     setSavingToLibrary(true);
     let saved = 0;
     let skipped = 0;
+    const updatedPersons = [...persons];
     for (const person of newFaces) {
       const avatar = getAvatar(person);
       const res = await fetch("/api/faces", {
@@ -124,17 +125,26 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
         }),
       });
       const result = await res.json();
+      // Update person's libraryEntryId (whether new or existing duplicate)
+      const idx = updatedPersons.findIndex((p) => p.id === person.id);
+      if (idx !== -1 && result.id) {
+        updatedPersons[idx] = { ...updatedPersons[idx], libraryEntryId: result.id };
+      }
       if (result.skipped) {
         skipped++;
       } else {
         saved++;
       }
     }
+    // Write back libraryEntryId to project data
+    setPersons(updatedPersons);
+    setHasUnsaved(true);
+    hasUnsavedRef.current = true;
     setSavingToLibrary(false);
     const msg = skipped > 0
       ? `新增 ${saved} 人，${skipped} 人已在人脸库中`
       : `已将 ${saved} 个人物保存到人脸库`;
-    alert(msg);
+    alert(msg + "，请点击保存同步项目数据");
   }, [persons, getAvatar]);
 
   const markEdited = useCallback(() => {

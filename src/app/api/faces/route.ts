@@ -33,6 +33,10 @@ export async function POST(request: Request) {
   const entries = await readJSON<FaceEntry[]>("face-library", []);
   const newDescriptor: number[] = body.descriptor || [];
 
+  if (newDescriptor.length !== 128) {
+    return NextResponse.json({ error: "Invalid descriptor" }, { status: 400 });
+  }
+
   // Check for duplicate
   if (newDescriptor.length === 128) {
     for (let i = 0; i < entries.length; i++) {
