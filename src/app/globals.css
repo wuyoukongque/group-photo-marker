@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+:root {
+  --primary: #1e477c;
+  --primary-light: #2a5a9e;
+  --primary-dark: #152f54;
+  --background: #f9fafb;
+  --foreground: #111111;
+  --card-bg: #ffffff;
+  --border: #e5e7eb;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "Segoe UI", "Noto Sans SC", "PingFang SC", "Microsoft YaHei",
+    system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Card hover effect */
+.card-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Fade in animation */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+/* Staggered children animation */
+.animate-stagger > * {
+  opacity: 0;
+  animation: fade-in 0.5s ease-out forwards;
+}
+.animate-stagger > *:nth-child(1) { animation-delay: 0s; }
+.animate-stagger > *:nth-child(2) { animation-delay: 0.05s; }
+.animate-stagger > *:nth-child(3) { animation-delay: 0.1s; }
+.animate-stagger > *:nth-child(4) { animation-delay: 0.15s; }
+.animate-stagger > *:nth-child(5) { animation-delay: 0.2s; }
+.animate-stagger > *:nth-child(6) { animation-delay: 0.25s; }
+
+/* Button base styles */
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+  border-radius: 9999px;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+.btn-primary:hover {
+  background: var(--primary-light);
+  box-shadow: 0 4px 12px rgba(30, 71, 124, 0.3);
+}
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btn-primary:disabled:hover {
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background: white;
+  color: var(--foreground);
+  font-weight: 500;
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.btn-secondary:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
