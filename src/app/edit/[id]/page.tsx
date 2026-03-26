@@ -145,6 +145,23 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
     setPersons(updatedPersons);
     setHasUnsaved(true);
     hasUnsavedRef.current = true;
+
+    // Also update missing avatars in face library
+    const avatarsToUpdate: Record<string, string> = {};
+    for (const p of updatedPersons) {
+      if (p.libraryEntryId && p.name) {
+        const avatar = getAvatar(p);
+        if (avatar) avatarsToUpdate[p.libraryEntryId] = avatar;
+      }
+    }
+    if (Object.keys(avatarsToUpdate).length > 0) {
+      fetch("/api/faces/update-avatars", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ avatars: avatarsToUpdate }),
+      }).catch(() => {});
+    }
+
     setSavingToLibrary(false);
     const msg = skipped > 0
       ? `新增 ${saved} 人，${skipped} 人已在人脸库中`
