@@ -224,8 +224,8 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="h-14 md:h-16 flex items-center justify-between gap-2">
             <div className="flex items-center gap-3 min-w-0">
-              <a href="/" className="text-sm font-medium text-gray-500 hover:text-[var(--primary)] transition-colors shrink-0">
-                ← 首页
+              <a href="/" className="shrink-0">
+                <img src="/images/logo-blue.png" alt="MindsLeap" className="h-7" />
               </a>
               {lastSaved && (
                 <span className="text-xs text-gray-400 hidden sm:inline">

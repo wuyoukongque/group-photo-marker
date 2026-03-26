@@ -32,9 +32,9 @@ export default function Home() {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <h1 className="text-lg font-bold text-[var(--primary)]">
-            集体照标注工具
-          </h1>
+          <a href="/">
+            <img src="/images/logo-blue.png" alt="MindsLeap" className="h-8" />
+          </a>
           <a
             href="/admin/faces"
             className="text-sm font-medium text-gray-500 hover:text-[var(--primary)] transition-colors"

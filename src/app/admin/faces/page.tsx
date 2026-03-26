@@ -77,9 +77,9 @@ export default function FaceLibraryAdmin() {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 md:h-16 flex items-center justify-between">
-          <h1 className="text-base md:text-lg font-bold text-[var(--primary)]">
-            人脸库管理
-          </h1>
+          <a href="/">
+            <img src="/images/logo-blue.png" alt="MindsLeap" className="h-7" />
+          </a>
           <a href="/" className="text-sm font-medium text-gray-500 hover:text-[var(--primary)] transition-colors">
             ← 返回首页
           </a>

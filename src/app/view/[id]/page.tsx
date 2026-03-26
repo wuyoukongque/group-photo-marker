@@ -165,7 +165,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
       {/* Header */}
       <header className="bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-          <span className="text-sm font-medium text-[var(--primary)]">集体照标注</span>
+          <a href="/"><img src="/images/logo-blue.png" alt="MindsLeap" className="h-6" /></a>
           <button
             onClick={() => setShowNames((v) => !v)}
             className="btn-secondary text-xs px-3 py-1.5"
