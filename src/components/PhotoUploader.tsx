@@ -3,7 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 
 interface PhotoUploaderProps {
-  onImageLoaded: (dataUrl: string) => void;
+  onImageLoaded: (dataUrl: string, file: File) => void;
 }
 
 export default function PhotoUploader({ onImageLoaded }: PhotoUploaderProps) {
@@ -16,7 +16,7 @@ export default function PhotoUploader({ onImageLoaded }: PhotoUploaderProps) {
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target?.result) {
-          onImageLoaded(e.target.result as string);
+          onImageLoaded(e.target.result as string, file);
         }
       };
       reader.readAsDataURL(file);

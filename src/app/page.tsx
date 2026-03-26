@@ -9,14 +9,26 @@ export default function Home() {
   const [creating, setCreating] = useState(false);
 
   const handleImageLoaded = useCallback(
-    async (dataUrl: string) => {
+    async (dataUrl: string, file: File) => {
       setCreating(true);
       try {
+        // Upload image via FormData (avoids body size limit)
+        const formData = new FormData();
+        formData.append("file", file);
+        const uploadRes = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+        if (!uploadRes.ok) throw new Error("Upload failed");
+        const { imageUrl } = await uploadRes.json();
+
+        // Create project with image URL (small payload)
         const res = await fetch("/api/projects", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ imageDataUrl: dataUrl }),
+          body: JSON.stringify({ imageDataUrl: imageUrl }),
         });
+        if (!res.ok) throw new Error("Create project failed");
         const { id, editToken } = await res.json();
         router.push(`/edit/${id}?token=${editToken}`);
       } catch {

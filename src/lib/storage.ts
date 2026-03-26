@@ -1,4 +1,4 @@
-import { put, list, del } from "@vercel/blob";
+import { put, list, del, head } from "@vercel/blob";
 import fs from "fs/promises";
 import path from "path";
 
@@ -19,9 +19,12 @@ export async function readJSON<T>(key: string, fallback: T): Promise<T> {
     try {
       const { blobs } = await list({ prefix: `${key}.json` });
       if (blobs.length === 0) return fallback;
-      const res = await fetch(blobs[0].downloadUrl);
+      // Use head() to get downloadUrl for private blobs
+      const blobInfo = await head(blobs[0].url);
+      const res = await fetch(blobInfo.downloadUrl);
       return await res.json();
-    } catch {
+    } catch (err) {
+      console.error(`readJSON(${key}) error:`, err);
       return fallback;
     }
   } else {
