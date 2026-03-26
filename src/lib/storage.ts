@@ -57,6 +57,7 @@ export async function writeJSON(key: string, data: unknown): Promise<void> {
       access: "private",
       contentType: "application/json",
       addRandomSuffix: false,
+      allowOverwrite: true,
     });
   } else {
     await ensureDataDir();
