@@ -19,7 +19,7 @@ export async function readJSON<T>(key: string, fallback: T): Promise<T> {
     try {
       const { blobs } = await list({ prefix: `${key}.json` });
       if (blobs.length === 0) return fallback;
-      const res = await fetch(blobs[0].url);
+      const res = await fetch(blobs[0].downloadUrl);
       return await res.json();
     } catch {
       return fallback;
@@ -41,16 +41,7 @@ export async function writeJSON(key: string, data: unknown): Promise<void> {
   const content = JSON.stringify(data);
 
   if (isVercel) {
-    // Delete old blob first (put creates new URL each time)
-    try {
-      const { blobs } = await list({ prefix: `${key}.json` });
-      for (const blob of blobs) {
-        await del(blob.url);
-      }
-    } catch {}
-
     await put(`${key}.json`, content, {
-      access: "public",
       contentType: "application/json",
       addRandomSuffix: false,
     });
