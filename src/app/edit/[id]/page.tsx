@@ -74,6 +74,11 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
     return () => clearInterval(interval);
   }, [id, loading, error]);
 
+  // Update page title
+  useEffect(() => {
+    document.title = title ? `编辑 - ${title}` : "编辑 - 集体照标注工具";
+  }, [title]);
+
   // Load image for avatar extraction
   useEffect(() => {
     if (!imageDataUrl) return;
