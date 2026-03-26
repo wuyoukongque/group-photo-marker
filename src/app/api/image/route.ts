@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { head } from "@vercel/blob";
+import { get } from "@vercel/blob";
 import fs from "fs/promises";
 import path from "path";
 
@@ -15,12 +15,14 @@ export async function GET(request: Request) {
 
   try {
     if (isVercel) {
-      const blobInfo = await head(key);
-      const res = await fetch(blobInfo.downloadUrl);
-      const data = await res.arrayBuffer();
+      const result = await get(key, { access: "private" });
+      if (!result) {
+        return NextResponse.json({ error: "Not found" }, { status: 404 });
+      }
+      const data = await result.arrayBuffer();
       return new NextResponse(data, {
         headers: {
-          "Content-Type": blobInfo.contentType || "image/jpeg",
+          "Content-Type": result.blob.contentType || "image/jpeg",
           "Cache-Control": "public, max-age=31536000, immutable",
         },
       });

@@ -1,4 +1,4 @@
-import { put, list, del, head } from "@vercel/blob";
+import { put, list, del, get } from "@vercel/blob";
 import fs from "fs/promises";
 import path from "path";
 
@@ -17,12 +17,10 @@ async function ensureDataDir() {
 export async function readJSON<T>(key: string, fallback: T): Promise<T> {
   if (isVercel) {
     try {
-      const { blobs } = await list({ prefix: `${key}.json` });
-      if (blobs.length === 0) return fallback;
-      // Use head() to get downloadUrl for private blobs
-      const blobInfo = await head(blobs[0].url);
-      const res = await fetch(blobInfo.downloadUrl);
-      return await res.json();
+      const result = await get(`${key}.json`, { access: "private" });
+      if (!result) return fallback;
+      const text = await result.text();
+      return JSON.parse(text);
     } catch (err) {
       console.error(`readJSON(${key}) error:`, err);
       return fallback;
