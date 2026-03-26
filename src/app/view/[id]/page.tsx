@@ -217,13 +217,18 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                   key={person.id}
                   className="card-hover flex flex-col items-center p-4 md:p-5 bg-white rounded-2xl border border-gray-100 shadow-sm"
                 >
-                  {avatars[person.id] && (
-                    <img
-                      src={avatars[person.id]}
-                      alt={person.name}
-                      className="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover mb-3 border-2 border-gray-100"
-                    />
-                  )}
+                  <div className="relative mb-3">
+                    {avatars[person.id] && (
+                      <img
+                        src={avatars[person.id]}
+                        alt={person.name}
+                        className="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover border-2 border-gray-100"
+                      />
+                    )}
+                    {person.bio && (
+                      <span className="absolute -top-1 -right-1 text-base md:text-lg" title="会员">👑</span>
+                    )}
+                  </div>
                   <p className="font-semibold text-sm text-center text-gray-800">
                     {person.name}
                   </p>
