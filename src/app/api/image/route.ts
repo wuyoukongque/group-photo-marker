@@ -19,8 +19,8 @@ export async function GET(request: Request) {
       if (!result) {
         return NextResponse.json({ error: "Not found" }, { status: 404 });
       }
-      const data = await result.arrayBuffer();
-      return new NextResponse(data, {
+      // Stream the blob content through
+      return new NextResponse(result.stream, {
         headers: {
           "Content-Type": result.blob.contentType || "image/jpeg",
           "Cache-Control": "public, max-age=31536000, immutable",

@@ -11,6 +11,17 @@ async function ensureDataDir() {
   } catch {}
 }
 
+async function streamToText(stream: ReadableStream<Uint8Array>): Promise<string> {
+  const reader = stream.getReader();
+  const chunks: Uint8Array[] = [];
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    chunks.push(value);
+  }
+  return Buffer.concat(chunks).toString("utf-8");
+}
+
 /**
  * Read JSON data by key (e.g. "projects/abc123" or "face-library")
  */
@@ -19,7 +30,7 @@ export async function readJSON<T>(key: string, fallback: T): Promise<T> {
     try {
       const result = await get(`${key}.json`, { access: "private" });
       if (!result) return fallback;
-      const text = await result.text();
+      const text = await streamToText(result.stream);
       return JSON.parse(text);
     } catch (err) {
       console.error(`readJSON(${key}) error:`, err);
