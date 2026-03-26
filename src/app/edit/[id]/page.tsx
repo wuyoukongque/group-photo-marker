@@ -110,9 +110,10 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
     if (!confirm(`将 ${newFaces.length} 个新人物保存到人脸库？`)) return;
     setSavingToLibrary(true);
     let saved = 0;
+    let skipped = 0;
     for (const person of newFaces) {
       const avatar = getAvatar(person);
-      await fetch("/api/faces", {
+      const res = await fetch("/api/faces", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -122,10 +123,18 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
           descriptor: person.descriptor,
         }),
       });
-      saved++;
+      const result = await res.json();
+      if (result.skipped) {
+        skipped++;
+      } else {
+        saved++;
+      }
     }
     setSavingToLibrary(false);
-    alert(`已将 ${saved} 个人物保存到人脸库`);
+    const msg = skipped > 0
+      ? `新增 ${saved} 人，${skipped} 人已在人脸库中`
+      : `已将 ${saved} 个人物保存到人脸库`;
+    alert(msg);
   }, [persons, getAvatar]);
 
   const markEdited = useCallback(() => {

@@ -40,16 +40,8 @@ export async function POST(request: Request) {
       if (existing.descriptor?.length === 128) {
         const dist = euclideanDistance(newDescriptor, existing.descriptor);
         if (dist < DUPLICATE_THRESHOLD) {
-          entries[i] = {
-            ...existing,
-            name: body.name || existing.name,
-            bio: body.bio || existing.bio,
-            avatarDataUrl: body.avatarDataUrl || existing.avatarDataUrl,
-            descriptor: newDescriptor,
-            updatedAt: new Date().toISOString(),
-          };
-          await writeJSON("face-library", entries);
-          return NextResponse.json({ id: existing.id, updated: true });
+          // Already exists - skip, don't overwrite existing data
+          return NextResponse.json({ id: existing.id, updated: false, skipped: true });
         }
       }
     }
